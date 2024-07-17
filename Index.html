@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Now Weather</title>
+    <style>
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  body{
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(150deg, #FFD7ff 20%,#000080 80%);
+    background-size: 300% 300%;
+    animation: gradientAnimation 10s linear infinite;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .search
+  {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0 0 0;
+  }
+  
+  .input_search{
+    background: white;
+    border: none;
+    height: 50px;
+    border-radius: 200px;
+    width: 70%;
+    margin: 0 10px 0 0;
+    padding: 0 0 0 25px ;
+    font-size: 19px;
+    outline: none;
+
+  }
+  
+  .button_search{
+    border-radius: 300px;
+    height: 50px;
+    width: 50px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search_img{
+    width: 30px;
+  }
+
+  .main{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 70px 0 0 0;
+    color: white;
+  }
+
+  .info {
+    width: 80%;
+    height: auto;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  .icon
+  {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 20px;
+    letter-spacing: 4px;
+    }
+    
+    .weather_icon{
+      width: 54%;
+    }
+    
+    .place{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 33px;
+      font-weight: bolder;
+      margin: 20px 0 20px 0;
+      font-family: Arial;
+      text-shadow: 0px 2px 2px #777;
+    }
+    
+    .cel{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      font-weight: bolder;
+      margin: 10px 0 20px 0;
+      font-family: Arial;
+    }
+    
+    .other_weather_info{
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+    }
+    
+    .oth_wea{
+      margin: 10px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      height: 80px;
+      width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border-radius: 8px;
+    }
+    
+    .oth_img{
+      width: 30px;
+    }
+    
+    .dy_value{
+      font-weight: bolder;
+      margin: 5px 0 2px 0;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="search">
+      <input type="text" name="" oninput="this.value=this.value.toUpperCase()" onkeypress="search()" class="input_search" id="city" value="" />
+      <button class="button_search" onclick="search()"><img src="search.png" class="search_img"  alt="" /></button>
+    </div>
+    <div class="main">
+      <div class="info">
+        
+        <div class="icon">
+          <img src="https://openweathermap.org/img/wn/clear.png" id="weather_icon" class="weather_icon" alt="" />
+          <span id="type">------</span>
+        </div>
+        
+        <div class="cel" id="temp">
+          00.00°C
+        </div>
+        
+        <div class="place" id="name">
+          --------
+        </div>
+        
+        <div class="other_weather_info">
+          <div class="humidity oth_wea">
+            <img src="images/humidity.png" class="oth_img" alt="" />
+            <span class="dy_value" id="humidity">00%</span> Humidity
+          </div>
+          <div class="wind oth_wea">
+            <img src="images/wind.png" class="oth_img" alt="" />
+            <span id="wind" class="dy_value">00km/h </span> Wind Speed
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" charset="utf-8">
+     var name=document.getElementById("name");
+     var temp=document.getElementById("temp");
+     var humidity=document.getElementById("humidity");
+     var wind=document.getElementById("wind")
+     var type=document.getElementById("type")
+     var weather_icon=document.getElementById("weather_icon")
+   
+      async function getweather(city){
+        var generate_data="https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=d3253c670b9a4025c271618f152661c1&units=metric"
+        var response= await fetch(generate_data)
+        var data = await response.json()
+        if(data.name==undefined){
+          alert("enter valid city name")
+        }else{
+          document.getElementById("name").innerHTML=data.name
+          temp.innerHTML=data.main.temp+"°C"
+          humidity.innerHTML=data.main.humidity+"%"
+          wind.innerHTML=data.wind.speed+"km/h"
+          type.innerHTML=data.weather[0].main
+          weather_icon.src = /* getAnimatedIconUrl(data.weather[0].icon)*/"https://openweathermap.org/img/wn/"+data.weather[0].icon+"@4x.png";
+          console.log(data.weather[0].icon)
+        }
+      }
+      
+      function search(){
+        var city=document.getElementById("city").value
+        if(city=="")
+        {
+          alert("please enter city name")
+        }else{
+          getweather(city)
+        }
+      }
+    </script>
+  </body>
+</html>
